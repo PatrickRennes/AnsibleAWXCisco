@@ -1,0 +1,34 @@
+- hosts: ios
+  strategy: free
+  gather_facts: no
+  connection: local
+  
+  tasks:
+         - name: SHOW VERSION
+           ios_command:
+             commands: 
+                - show version
+           register: show_version
+           ignore_errors: True
+
+         - name: SHOW INVENTORY RAW
+           ios_command:
+             commands:
+                - show inventory raw
+           register: show_inventory_raw
+           ignore_errors: True
+
+         - name: SHOW INTERFACE
+           ios_command:
+             commands:
+               - show interface
+           register: show_interface
+           ignore_errors: True
+
+         - name: SET DATA
+           template: 
+             src: IOS_show_version.j2
+             dest: "/tmp/{{ inventory_hostname }}.txt"
+           with_items: 
+                - show_version
+                - show_inventory_raw
